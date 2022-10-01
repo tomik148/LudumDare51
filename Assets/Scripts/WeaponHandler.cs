@@ -6,13 +6,13 @@ using UnityEngine.UIElements;
 
 public class WeaponHandler : MonoBehaviour
 {
-    public WeaponScriptableObject weapon;
-    public Vector3 d = Vector3.forward;
+    [SerializeField]
+    private WeaponScriptableObject weapon;
     
     private GameObject _childObject;
     private SpriteRenderer _spriteRenderer;
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         _childObject = new GameObject("WeaponHolder");
         _childObject.transform.SetParent(this.transform,false);
@@ -23,14 +23,28 @@ public class WeaponHandler : MonoBehaviour
         }
     }
 
+    // Update is called once per frame
+    public void Update()
+    {
+        UpdateWeaponAngle();       
+        if (Input.GetAxisRaw("Fire1") != 0)
+        {
+            ActivateWeapon();
+        }
+    }
+
     public void ChangeWeapon(WeaponScriptableObject weapon)
     {
         this.weapon = weapon;
         _spriteRenderer.sprite = weapon.visual;
     }
+
+    private void ActivateWeapon()
+    {
+        weapon.Activate(_childObject);
+    }
     
-    // Update is called once per frame
-    void Update()
+    private void UpdateWeaponAngle()
     {
         var mouseWordPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseWordPosition.z = 0;    
